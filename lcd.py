@@ -86,6 +86,62 @@ def lcdInit():
     print "init done"
     
 
+# Function lcdWriteLine: Write a line on the lcd 
+# 
+# Parameters: value=number of line to write [1-4]; string=the string to be written on the selected line
+# Output value: none
+def lcdWriteLine(value, string):
+   #Check if the line number is correct
+   if ((value < 0) or (value > 4)):
+      print ("[DEBUG] can't write a line out of the range 1 - 4")
+   else:
+   #Determinate how line must be write
+   if (value == 1):
+      lcdGoToXY(0,1)
+   if (value == 2):
+      lcdGoToXY(0,2)
+   if (value == 3):
+      lcdGoToXY(0,3)
+   if (value == 4):
+      lcdGoToXY(0,4)
+   #Once set the cursor on the right position, write the line on the lcd
+      lcdWriteString(string)
+ 
+
+# Function lcdWriteString: Write a string on the lcd at the current position
+# 
+# Parameters: string=the string to be written on the selected line
+# Output value: none
+def lcdWriteString(string):
+   #Determination of the string length
+   length = len(string)
+   for i in range (0, length):
+      lcdWriteByte(string[i], 'data')
+
+
+# Function lcdGoToXY: Send cursor to the desidered position 
+# 
+# Parameters: Xval=the column to be selected; Yval=the row to be selected
+# Output value: none
+def lcdGoToXY(Xval, Yval):
+   #Select row and column
+   switch(Yval):
+      case 1:
+         pos = 0x00
+         break
+      case 2:
+         pos = 0xC0
+      case 3:
+         pos = 0x14
+      case 4:
+         pos = 0xD4
+      default:
+         print ("[DEBUG] Errore in selecting the line number")
+   pos = pos + (XVal - 1)   
+   #Set DDRAM to the new position
+   value = 0x80 or pos
+   lcdWriteByte(value, 'cmd')   
+
 def welcome():
         #lcd_w('0000111000')
         lcdWriteByte(0x38, 'cmd')
