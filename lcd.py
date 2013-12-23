@@ -63,11 +63,11 @@ def lcdWriteByte(byte, mode):
     GPIO.output(LCD_E, GPIO.LOW)
 
 
-# Function lcdInit: initialize lcd 
+# Function init: initialize lcd 
 # 
 # Parameters: none
 # Output value: none
-def lcdInit():
+def init():
     #Put enable pin low
     GPIO.output(LCD_E,GPIO.LOW)   
     time.sleep(0.01)
@@ -98,81 +98,53 @@ def lcdInit():
     time.sleep(0.01)
     #lcd_w('1001010111')
 
-
+# Function writeln: Write a line on the lcd 
+# 
+# Parameters: line=number of lcd line on wich write string; data=the string to be written
+# Output value: none
 def writeln(line, data):
+    #Check length of the string to be write
     if (len(data) > 20):
         print "ERROR: wrong string length"
     else:
+    #Fill all the 20 characters of a display line (not used will be fill with space
         data = data.ljust(20)
-        goto(line,0)
+        #Go to selected line
+        goto(line,1)
+        #Write the string
         for i in range(0,19):    
             lcdWriteByte(data[i], 'data')
 
-# Function lcdWriteLine: Write a line on the lcd 
-# 
-# Parameters: value=number of line to write [1-4]; string=the string to be written on the selected line
-# Output value: none
-"""
-def lcdWriteLine(value, string):
-    #Check if the line number is correct
-    if ((value < 0) or (value > 4)):
-        print ("[DEBUG] can't write a line out of the range 1 - 4")
-    else:
-        #Determinate how line must be write
-        if (value == 1):
-            lcdGoToXY(0,1)
-        if (value == 2):
-            lcdGoToXY(0,2)
-        if (value == 3):
-            lcdGoToXY(0,3)
-        if (value == 4):
-            lcdGoToXY(0,4)
-    #Once set the cursor on the right position, write the line on the lcd
-    lcdWriteString(string)
-"""
 
-# Function lcdWriteString: Write a string on the lcd at the current position
+# Function writestr: Write a string on the lcd at the current position
 # 
 # Parameters: string=the string to be written on the selected line
 # Output value: none
-def lcdWriteString(string):
+def writestr(data):
    #Determination of the string length
-   length = len(string)
+   length = len(data)
+   #Write the string
    for i in range (0, length):
-      lcdWriteByte(string[i], 'data')
+      lcdWriteByte(data[i], 'data')
 
 
-def goto(line, offset):
-    position = {1:0x00, 2:0x40, 3:0x14, 4:0x54}
-    lcdWriteByte( (0x80 | (position[line] + (offset-1))), 'cmd')    
-
-
-# Function lcdGoToXY: Send cursor to the desidered position 
+# Function goto: Send the cursor to the desidered position on lcd 
 # 
-# Parameters: Xval=the column to be selected; Yval=the row to be selected
+# Parameters: line=the line to go to [1-4]; offset=the character index on the line previously indicated
 # Output value: none
-"""
-def lcdGoToXY(Xval, Yval):
-    #Select row and column
-    switch(Yval):
-        case 1:
-            pos = 0x00
-            break
-        case 2:
-            pos = 0xC0
-        case 3:
-            pos = 0x14
-        case 4:
-            pos = 0xD4
-        default:
-            print ("[DEBUG] Errore in selecting the line number")
-    pos = pos + (XVal - 1)   
-    #Set DDRAM to the new position
-    value = 0x80 or pos
-    lcdWriteByte(value, 'cmd')   
-"""
+def goto(line, offset):
+    #Define a dictionary with the inital index of every line on the lcd
+    position = {1:0x00, 2:0x40, 3:0x14, 4:0x54}
+    #Send the command to the lcd with the desidered position
+    lcdWriteByte( (0x80 | (position[line] + (offset-1))), 'cmd')    
+        
 
-def lcdClear():
+
+# Function clear: clear the whole display
+# 
+# Parameters: none
+# Output value: none
+def clear():
     lcdWriteByte(0x01, 'cmd')   # clear display
     lcdWriteByte(0x02, 'cmd')   # go home
 
