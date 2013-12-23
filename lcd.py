@@ -156,15 +156,15 @@ def welcome():
 if __name__ == '__main__':
     print "inizio test"
     setup()
-    lcdInit()
+    init()
     #welcome()
     print "Scrivo 'a'"
     lcdWriteByte('a', 'data')
     time.sleep(5)
     print "Scrivo 'ciao'"
-    lcdWriteString("ciao")
+    writestr("ciao")
     time.sleep(2)
     goto(2,4)
-    lcdWriteString("Vittoria!")
+    writestr("Vittoria!")
     writeln(3,'01234567890123456789')
     while(1): time.sleep(1)
