@@ -98,7 +98,15 @@ def lcdInit():
     time.sleep(0.01)
     #lcd_w('1001010111')
 
-    
+
+def writeln(line, data):
+    if (len(data) > 20):
+        print "ERROR: wrong string length"
+    else:
+        data = data.ljust(20)
+        goto(line,0)
+        for i in range(0,19):    
+            lcdWriteByte(data[i], 'data')
 
 # Function lcdWriteLine: Write a line on the lcd 
 # 
@@ -132,6 +140,11 @@ def lcdWriteString(string):
    length = len(string)
    for i in range (0, length):
       lcdWriteByte(string[i], 'data')
+
+
+def goto(line, offset):
+    position = {1:0x00, 2:0x40, 3:0x14, 4:0x54}
+    lcdWriteByte( (0x80 | (position[line] + (offset-1))), 'cmd')    
 
 
 # Function lcdGoToXY: Send cursor to the desidered position 
@@ -179,6 +192,7 @@ if __name__ == '__main__':
     print "Scrivo 'ciao'"
     lcdWriteString("ciao")
     time.sleep(2)
-    lcdClear()
+    goto(2,4)
     lcdWriteString("Vittoria!")
+    writeln(3,'01234567890123456789')
     while(1): time.sleep(1)
