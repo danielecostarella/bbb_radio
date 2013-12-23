@@ -28,14 +28,17 @@ def setup():
 # Function lcdWriteByte: Send a byte to lcd
 # 
 # Parameters: 
-# 	byte -> byte to send to lcd (hex format)	      
+# 	byte -> byte to send to lcd (hex format). It can be a numeric value or a character	      
 # 	mode -> type of the operation (data=send a data to lcd to write a char; cmd=send a command to lcd)
 # Output value: none
 def lcdWriteByte(byte, mode):
     
-    # format hex value in binary format
-    byte = '{:08b}'.format(byte)
-    #print "Sto scrivendo "+byte+"\n"
+    if type(byte)==int:    
+        # format hex value in binary format
+        byte = '{:08b}'.format(byte)
+    else
+        byte = '{:08b}'.format(ord(byte))   # byte is a char
+    
     # put data on output port
     for i in range(0, 8):
         if byte[i] == '1': GPIO.output(LCD_D[i], GPIO.HIGH)
@@ -161,5 +164,8 @@ if __name__ == '__main__':
     print "inizio test"
     setup()
     lcdInit()
-    welcome()
+    #welcome()
+    lcdWriteByte('a')
+    time.sleep(20)
+    lcdWriteString("ciao")
     while(1): time.sleep(1)
