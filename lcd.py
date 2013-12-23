@@ -36,7 +36,7 @@ def lcdWriteByte(byte, mode):
     if type(byte)==int:    
         # format hex value in binary format
         byte = '{:08b}'.format(byte)
-    else
+    else:
         byte = '{:08b}'.format(ord(byte))   # byte is a char
     
     # put data on output port
@@ -87,6 +87,17 @@ def lcdInit():
     lcdWriteByte(0x05,'cmd') 
     time.sleep(0.1)
     print "init done"
+    #lcd_w('0000111000')
+    lcdWriteByte(0x38, 'cmd')   # function set: 8 bit operation, 2 lines, 5x8 dots character font
+    time.sleep(0.01)
+    #lcd_w('0000001110')
+    lcdWriteByte(0x0C, 'cmd')   # display on/off control: display on, cursor off
+    time.sleep(0.01)
+    #lcd_w('0000000110')
+    lcdWriteByte(0x06, 'cmd')   # entry mode set: increase address by one, no shift
+    time.sleep(0.01)
+    #lcd_w('1001010111')
+
     
 
 # Function lcdWriteLine: Write a line on the lcd 
@@ -94,21 +105,21 @@ def lcdInit():
 # Parameters: value=number of line to write [1-4]; string=the string to be written on the selected line
 # Output value: none
 def lcdWriteLine(value, string):
-   #Check if the line number is correct
-   if ((value < 0) or (value > 4)):
-      print ("[DEBUG] can't write a line out of the range 1 - 4")
-   else:
-   #Determinate how line must be write
-   if (value == 1):
-      lcdGoToXY(0,1)
-   if (value == 2):
-      lcdGoToXY(0,2)
-   if (value == 3):
-      lcdGoToXY(0,3)
-   if (value == 4):
-      lcdGoToXY(0,4)
-   #Once set the cursor on the right position, write the line on the lcd
-      lcdWriteString(string)
+    #Check if the line number is correct
+    if ((value < 0) or (value > 4)):
+        print ("[DEBUG] can't write a line out of the range 1 - 4")
+    else:
+        #Determinate how line must be write
+    if (value == 1):
+        lcdGoToXY(0,1)
+    if (value == 2):
+        lcdGoToXY(0,2)
+    if (value == 3):
+        lcdGoToXY(0,3)
+    if (value == 4):
+        lcdGoToXY(0,4)
+    #Once set the cursor on the right position, write the line on the lcd
+    lcdWriteString(string)
  
 
 # Function lcdWriteString: Write a string on the lcd at the current position
@@ -126,38 +137,29 @@ def lcdWriteString(string):
 # 
 # Parameters: Xval=the column to be selected; Yval=the row to be selected
 # Output value: none
+"""
 def lcdGoToXY(Xval, Yval):
-   #Select row and column
-   switch(Yval):
-      case 1:
-         pos = 0x00
-         break
-      case 2:
-         pos = 0xC0
-      case 3:
-         pos = 0x14
-      case 4:
-         pos = 0xD4
-      default:
-         print ("[DEBUG] Errore in selecting the line number")
-   pos = pos + (XVal - 1)   
-   #Set DDRAM to the new position
-   value = 0x80 or pos
-   lcdWriteByte(value, 'cmd')   
-
+    #Select row and column
+    switch(Yval):
+        case 1:
+            pos = 0x00
+            break
+        case 2:
+            pos = 0xC0
+        case 3:
+            pos = 0x14
+        case 4:
+            pos = 0xD4
+        default:
+            print ("[DEBUG] Errore in selecting the line number")
+    pos = pos + (XVal - 1)   
+    #Set DDRAM to the new position
+    value = 0x80 or pos
+    lcdWriteByte(value, 'cmd')   
+"""
 def welcome():
-        #lcd_w('0000111000')
-        lcdWriteByte(0x38, 'cmd')
-        time.sleep(0.01)
-        #lcd_w('0000001110')
-        lcdWriteByte(0x0C, 'cmd')
-        time.sleep(0.01)
-        #lcd_w('0000000110')
-        lcdWriteByte(0x06, 'cmd')
-        time.sleep(0.01)
-        #lcd_w('1001010111')
-        lcdWriteByte(0x57, 'data')
-        time.sleep(0.01)    
+    lcdWriteByte(0x57, 'data')  #write 'W' char
+    time.sleep(0.01)    
 
 
 if __name__ == '__main__':
@@ -165,7 +167,9 @@ if __name__ == '__main__':
     setup()
     lcdInit()
     #welcome()
-    lcdWriteByte('a')
+    print "Scrivo 'a'"
+    lcdWriteByte('a', data)
     time.sleep(20)
+    print "Scrivo 'ciao'"
     lcdWriteString("ciao")
     while(1): time.sleep(1)
