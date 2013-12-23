@@ -104,23 +104,24 @@ def lcdInit():
 # 
 # Parameters: value=number of line to write [1-4]; string=the string to be written on the selected line
 # Output value: none
+"""
 def lcdWriteLine(value, string):
     #Check if the line number is correct
     if ((value < 0) or (value > 4)):
         print ("[DEBUG] can't write a line out of the range 1 - 4")
     else:
         #Determinate how line must be write
-    if (value == 1):
-        lcdGoToXY(0,1)
-    if (value == 2):
-        lcdGoToXY(0,2)
-    if (value == 3):
-        lcdGoToXY(0,3)
-    if (value == 4):
-        lcdGoToXY(0,4)
+        if (value == 1):
+            lcdGoToXY(0,1)
+        if (value == 2):
+            lcdGoToXY(0,2)
+        if (value == 3):
+            lcdGoToXY(0,3)
+        if (value == 4):
+            lcdGoToXY(0,4)
     #Once set the cursor on the right position, write the line on the lcd
     lcdWriteString(string)
- 
+"""
 
 # Function lcdWriteString: Write a string on the lcd at the current position
 # 
@@ -157,8 +158,13 @@ def lcdGoToXY(Xval, Yval):
     value = 0x80 or pos
     lcdWriteByte(value, 'cmd')   
 """
+
+def lcdClear():
+    lcdWriteByte(0x01, 'cmd')   # clear display
+    lcdWriteByte(0x02, 'cmd')   # go home
+
 def welcome():
-    lcdWriteByte(0x57, 'data')  #write 'W' char
+    lcdWriteByte(0x57, 'data')  # write 'W' char
     time.sleep(0.01)    
 
 
@@ -168,8 +174,11 @@ if __name__ == '__main__':
     lcdInit()
     #welcome()
     print "Scrivo 'a'"
-    lcdWriteByte('a', data)
-    time.sleep(20)
+    lcdWriteByte('a', 'data')
+    time.sleep(5)
     print "Scrivo 'ciao'"
     lcdWriteString("ciao")
+    time.sleep(2)
+    lcdClear()
+    lcdWriteString("Vittoria!")
     while(1): time.sleep(1)
