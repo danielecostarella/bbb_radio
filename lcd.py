@@ -1,6 +1,20 @@
+#!/usr/bin/env python
+
+# HD44780 LCD Driver for BeagleBone and BeagleBone Black
+# using Adafruit Python library
+#
+# Authors:  Daniele Costarella  <daniele.costarella@gmail.com>
+#           Mario Pucciarelli   <pucciarelli.mario@gmail.com>
+#
+# Date:     11/30/2013
+
+__author__ = "Daniele Costarella and Mario Pucciarelli"
+__credits__ = ["Daniele Costarella", "Mario Pucciarelli"]
+__license__ = "GPL"
+__version__ = "0.0.1"
+
 import Adafruit_BBIO.GPIO as GPIO
 import time
-
 
 # LDC pins
 LCD_RS = "P9_12"  #Control operation type: RS = 1 -> data; RS = 0 -> command
@@ -112,7 +126,7 @@ def writeln(line, data):
         #Go to selected line
         goto(line,1)
         #Write the string
-        for i in range(0,19):    
+        for i in range(0,20):    
             lcdWriteByte(data[i], 'data')
 
 
@@ -140,12 +154,19 @@ def goto(line, offset):
         
 
 
-# Function clear: clear the whole display
+# clear(): clears the LCD screen and positions the cursor in the upper-left corner
 # 
 # Parameters: none
 # Output value: none
 def clear():
     lcdWriteByte(0x01, 'cmd')   # clear display
+    lcdWriteByte(0x02, 'cmd')   # go home
+
+# home(): positions the cursor in the upper-left corner
+#
+# Parameters: none
+# Output value: none
+def home():
     lcdWriteByte(0x02, 'cmd')   # go home
 
 def welcome():
@@ -164,6 +185,8 @@ if __name__ == '__main__':
     print "Scrivo 'ciao'"
     writestr("ciao")
     time.sleep(2)
+    goto(2,20)
+    writestr("D")
     goto(2,4)
     writestr("Vittoria!")
     writeln(3,'01234567890123456789')
