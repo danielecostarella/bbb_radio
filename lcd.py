@@ -130,6 +130,34 @@ def writeln(line, data):
             lcdWriteByte(data[i], 'data')
 
 
+
+# Function writeln: Write a line on the lcd
+#
+# Parameters: line=number of lcd line on wich write string; data=the string to be written
+# Output value: none
+# scroll is a bool 1: scroll on / 0: scroll off
+def scroll(line, data):
+    #Check length of the string to be write
+    if (len(data) > 20):
+        data = data.strip()
+        goto(line, 1)
+        [i, j] = [0, 19]
+        while j < len(data) + 1:
+             #writeln(line,"                    ")
+             writeln(line,data[i:j])
+             i = i + 1
+             j = j + 1
+             time.sleep(0.25)
+    else:
+    #Fill all the 20 characters of a display line (not used will be fill with space
+        data = data.ljust(20)
+        #Go to selected line
+        goto(line,1)
+        #Write the string
+        for i in range(0,20):
+            lcdWriteByte(data[i], 'data')
+
+
 # Function writestr: Write a string on the lcd at the current position
 # 
 # Parameters: string=the string to be written on the selected line
@@ -180,6 +208,8 @@ if __name__ == '__main__':
     init()
     #welcome()
     print "Scrivo 'a'"
+    scroll(3, "Stringa maggiore di 20 caratteri")
+    time.sleep(5)
     lcdWriteByte('a', 'data')
     time.sleep(5)
     print "Scrivo 'ciao'"
