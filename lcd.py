@@ -15,6 +15,9 @@ __version__ = "0.0.1"
 
 import Adafruit_BBIO.GPIO as GPIO
 import time
+import threading
+
+scroll_on = 1
 
 # LDC pins
 LCD_RS = "P9_12"  #Control operation type: RS = 1 -> data; RS = 0 -> command
@@ -72,7 +75,7 @@ def lcdWriteByte(byte, mode):
     # E -> 1
     GPIO.output(LCD_E, GPIO.HIGH)
     # wait 1 ms
-    time.sleep(0.01)
+    #time.sleep(0.001)
     # E -> 0
     GPIO.output(LCD_E, GPIO.LOW)
 
@@ -157,6 +160,33 @@ def scroll(line, data):
         for i in range(0,20):
             lcdWriteByte(data[i], 'data')
 
+dati = ["Prima linea", "Seconda linea lunghissima", "Terza", "Quarta"]
+def scroll4(line, dati):
+    #clear()
+    spaces = ""
+    lista1 = []
+    lista2 = []
+    lista3 = []
+    lista4 = []
+    for i in range(0,20):
+        spaces = spaces+" "
+    for i in range(0,4):
+        dati[i] = dati[i].strip()+spaces
+    lista1 = list(dati[0])
+    lista2 = list(dati[1])
+    lista3 = list(dati[2])
+    lista4 = list(dati[3])
+    while(scroll_on):
+        writeln(1, "".join(lista1)[0:19])
+        writeln(2, "".join(lista2)[0:19])
+        writeln(3, "".join(lista3)[0:19])
+        writeln(4, "".join(lista4)[0:19])
+        time.sleep(0.3)
+        lista1.append(lista1.pop(0))
+        lista2.append(lista2.pop(0))
+        lista3.append(lista3.pop(0))
+        lista4.append(lista4.pop(0))
+    return
 
 # Function writestr: Write a string on the lcd at the current position
 # 
@@ -201,15 +231,26 @@ def welcome():
     lcdWriteByte(0x57, 'data')  # write 'W' char
     time.sleep(0.01)    
 
+def test1():
+    print "Thread 0"
+    return
 
 if __name__ == '__main__':
     print "inizio test"
+    threads = []
     setup()
     init()
     #welcome()
     print "Scrivo 'a'"
-    scroll(3, "Stringa maggiore di 20 caratteri")
+    t = threading.Thread(target=scroll4, args=(1, ["Prima linea", "Seconda linea lunghissima", "Terza", "Quarta"]))
+    t.start()
+    print "Thread partito"
+    time.sleep(10)
+    scroll_on = 0
+    #scroll3(1, ["Prima linea", "Seconda linea lunghissima", "Terza", "Quarta"])
+    #scroll3(3, "Frase  maggiore di 20 caratteri")
     time.sleep(5)
+    scroll_on = 1
     lcdWriteByte('a', 'data')
     time.sleep(5)
     print "Scrivo 'ciao'"
