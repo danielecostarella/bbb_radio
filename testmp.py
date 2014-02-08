@@ -62,11 +62,11 @@ sys.stdin = sys.__stdin__ #restore original stdin
 
 def function1():
     print "Run function 1"
-    p.stdin.write('volume +1\n')
+    p.stdin.write('set_property volume 10\n')
 
 def function2():
     print "Run function 2"
-    p.stdin.write('pause\n')
+    p.stdin.write('set_property volume 25\n')
 
 def function3():
     print "Run function 3"
