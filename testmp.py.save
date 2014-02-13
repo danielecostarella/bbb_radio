@@ -6,13 +6,13 @@ import re
 import lcd
 import threading
 
-stations={'JAZZ': 'http://www.radioswissjazz.ch/live/aacp.m3u', 'Virgin Radio': 'http://shoutcast.unitedradio.it:1301','Deejay': 'http://mp3.kataweb.it:8000/RadioDeejay','105Hits': 'http://shoutcast.unitedradio.it:1109/listen.pls'}
+stations={'JAZZ': 'http://www.radioswissjazz.ch/live/aacp.m3u', 'Virgin Radio': 'http://shoutcast.unitedradio.it:1301','Deejay':'http://mp3.kataweb.it:8000/RadioDeejay'}
 volume = 25 #default volume value for mplayer 
 
 #p = subprocess.Popen(["mplayer","-ao","alsa:device=hw=1.0", "-quiet", "-slave", "http://shoutcast.unitedradio.it:1301"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 #p = subprocess.Popen(["mplayer","-ao","alsa:device=hw=1.0", "-slave", "-playlist", "http://www.radioswissjazz.ch/live/aacp.m3u"], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 #p = subprocess.Popen(["mplayer","-ao","alsa:device=hw=1.0", "-slave", "-mixer-channel", "-playlist", stations['JAZZ']], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-p = subprocess.Popen(["mplayer","-ao","alsa:device=hw=1.0", "-slave", "-playlist", stations['105Hits']], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+p = subprocess.Popen(["mplayer","-ao","alsa:device=hw=1.0", "-slave", "-playlist", stations['JAZZ']], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
 # set the lcd up
 lcd.setup()
@@ -64,7 +64,7 @@ sys.stdin = sys.__stdin__ #restore original stdin
 def function1():
     print "Run function 1"
     global volume
-    volume = volume + 5
+    volume = volume + 10
     string = "set_property volume %d\n"  %(volume)
     print "Setting volume: %d\n" %(volume) 
     #p.stdin.write('set_property volume 10\n')
