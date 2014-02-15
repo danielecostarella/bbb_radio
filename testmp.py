@@ -10,7 +10,7 @@ stations={'JAZZ': 'http://www.radioswissjazz.ch/live/aacp.m3u', 'Virgin Radio': 
 volume = 25 	#default volume value for mplayer 
 streamTitle=""
 pause = 0
-lines = [1, 2, 3, 4]
+lines = ["", "", "", ""]
 
 #p = subprocess.Popen(["mplayer","-ao","alsa:device=hw=1.0", "-quiet", "-slave", "http://shoutcast.unitedradio.it:1301"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 #p = subprocess.Popen(["mplayer","-ao","alsa:device=hw=1.0", "-slave", "-playlist", "http://www.radioswissjazz.ch/live/aacp.m3u"], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
@@ -70,39 +70,48 @@ sys.stdin = sys.__stdin__ #restore original stdin
 
 def function1():
     print "Run function 1"
-    global volume
+    global volume, pause
     volume = volume + 5
     string = "set_property volume %d\n"  %(volume)
-    print "Setting volume: %d\n" %(volume) 
+    print "Setting volume: %d\n" %(volume)
     #p.stdin.write('set_property volume 10\n')
     p.stdin.write(string)
+    if pause==1:
+        lines[3]=""
+        pause=0
+        
 
 def function2():
     print "Run function 2"
-    global volume
+    global volume, pause
     volume = volume - 5
     print "Setting volume: %d\n" %(volume)
     string = 'set_property volume %d\n' %(volume)
     p.stdin.write(string)
     #p.stdin.write('set_property volume 40\n')
+    if pause==1:
+        lines[3]=""
+        pause=0
 
 def function3():
     global pause
     print "Run function 3"
     if pause==False: 
         p.stdin.write('pause\n')
-        lcd.writeln(4, "**PAUSE**")
+        lines[3]="**PAUSE**"
+        #lcd.writeln(4, "**PAUSE**")
         pause = True
     else:
         p.stdin.write('pause\n')
-        lcd.writeln(4, "") # clear line 4
+        lines[3]=""
+        #lcd.writeln(4, "") # clear line 4
         pause = False	
 
 def function4():
     global streamTitle
     print "Run function 4"
     print streamTitle
-    lcd.writeln(2, streamTitle[0:20])
+    #lcd.writeln(2, streamTitle[0:20])
 
 def updateLCD():
     global lines 
@@ -110,8 +119,10 @@ def updateLCD():
     while(1):
         lines[1] = streamTitle
         lcd.writeln(2, lines[1][0:20])
+        lcd.writeln(4, lines[3])
         #lcd.writeln(2, streamTitle[0:20])
-        time.sleep(1)
+        #time.sleep(1)
+        
 
 t2 = threading.Thread(target=updateLCD)
 t2.start()
