@@ -7,30 +7,37 @@ import lcd
 import threading
 
 stations={'JAZZ': 'http://www.radioswissjazz.ch/live/aacp.m3u', 'Virgin Radio': 'http://shoutcast.unitedradio.it:1301','Deejay': 'http://mp3.kataweb.it:8000/RadioDeejay','105Hits': 'http://shoutcast.unitedradio.it:1109/listen.pls'}
-volume = 25 #default volume value for mplayer 
+volume = 25 	#default volume value for mplayer 
+streamTitle=""
+pause = 0
+lines = [1, 2, 3, 4]
 
 #p = subprocess.Popen(["mplayer","-ao","alsa:device=hw=1.0", "-quiet", "-slave", "http://shoutcast.unitedradio.it:1301"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 #p = subprocess.Popen(["mplayer","-ao","alsa:device=hw=1.0", "-slave", "-playlist", "http://www.radioswissjazz.ch/live/aacp.m3u"], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 #p = subprocess.Popen(["mplayer","-ao","alsa:device=hw=1.0", "-slave", "-mixer-channel", "-playlist", stations['JAZZ']], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-p = subprocess.Popen(["mplayer","-ao","alsa:device=hw=1.0", "-slave", "-playlist", stations['105Hits']], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+p = subprocess.Popen(["mplayer","-ao","alsa:device=hw=1.0", "-slave", "-playlist", stations['JAZZ']], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
 # set the lcd up
 lcd.setup()
 lcd.init()
-
 # to be called as a new thread
 #def waitCmd():
 
 # to be called as a new thread
 def streamAnalysis():
+    global streamTitle
     print "[DEBUG] Thread analysis"
     for line in p.stdout:
         if line.startswith("ICY Info"):
             info = line.split(':', 1)[1].strip()
             attr = dict(re.findall("(\w+)='([^']*)'", info))
             print '[DEBUG] Stream title: '+ attr.get('StreamTitle', '(none)')
+            #streamTitle = '[DEBUG] Stream title: '+ attr.get('StreamTitle', '(none)')
+            streamTitle = attr.get('StreamTitle', '(none)')
+            print streamTitle
 
-lcd.writeln(3, "Welcome!")
+
+lcd.writeln(1, "Welcome!")
 print "Welcome!"
 
 t = threading.Thread(target=streamAnalysis)
@@ -80,15 +87,40 @@ def function2():
     #p.stdin.write('set_property volume 40\n')
 
 def function3():
+    global pause
     print "Run function 3"
-    p.stdin.write('pause\n')	
+    if pause==False: 
+        p.stdin.write('pause\n')
+        lcd.writeln(4, "**PAUSE**")
+        pause = True
+    else:
+        p.stdin.write('pause\n')
+        lcd.writeln(4, "") # clear line 4
+        pause = False	
 
 def function4():
+    global streamTitle
     print "Run function 4"
+    print streamTitle
+    lcd.writeln(2, streamTitle[0:20])
+
+def updateLCD():
+    global lines 
+    global streamTitle
+    while(1):
+        lines[1] = streamTitle
+        lcd.writeln(2, lines[1][0:20])
+        #lcd.writeln(2, streamTitle[0:20])
+        time.sleep(1)
+
+t2 = threading.Thread(target=updateLCD)
+t2.start()
+
 
 # read event streaming
 evt_file = open("/dev/input/event1", "rb")
 while(1):
+    #lcd.writeln(2, streamTitle[0:20])
     evt = evt_file.read(16) # Read the event
     evt_file.read(16)       # Discard the debounce event 
     code = ord(evt[10])
