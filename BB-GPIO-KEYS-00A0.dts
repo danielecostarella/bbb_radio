@@ -17,6 +17,7 @@
                     0x150 0x2F // P9_22 = End stop Y1  = GPIO0_2
                     0x044 0x2F // P9_23 = End stop Z1  = GPIO1_17
                     0x184 0x2F // P9_24 = End stop Z2  = GPIO0_15
+                    0x180 0x2F // P9_26 = BTN5 = GPIO0_14
                 >;
             };
         };
@@ -61,6 +62,13 @@
                     debounce_interval = <50>;
                     linux,code = <4>;
                     gpios = <&gpio1 15 0x5>;
+                    gpio-key,wakeup;
+                };
+                switch_BTN5 {
+                    label = "Button5";
+                    debounce_interval = <50>;
+                    linux,code = <4>;
+                    gpios = <&gpio1 14 0x5>;
                     gpio-key,wakeup;
                 };
            };
