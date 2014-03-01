@@ -105,31 +105,80 @@ def lcdWriteByte(byte, mode):
     GPIO.output(LCD_E, GPIO.LOW)
 
 
+def init_4bit():
+    #Put enable pin low
+    GPIO.output(LCD_E,GPIO.LOW)
+    time.sleep(0.01)
+    GPIO.output("P8_11",GPIO.LOW)
+    GPIO.output("P8_12",GPIO.LOW)
+    GPIO.output("P8_14",GPIO.HIGH)
+    GPIO.output("P8_15",GPIO.HIGH)
+    GPIO.output(LCD_RW, GPIO.LOW)
+    GPIO.output(LCD_RS, GPIO.LOW)
+    GPIO.output(LCD_E, GPIO.HIGH)
+    time.sleep(0.001)
+    GPIO.output(LCD_E, GPIO.LOW)
+
+    time.sleep(0.005)
+    GPIO.output("P8_11",GPIO.LOW)
+    GPIO.output("P8_12",GPIO.LOW)
+    GPIO.output("P8_14",GPIO.HIGH)
+    GPIO.output("P8_15",GPIO.HIGH)
+    GPIO.output(LCD_RW, GPIO.LOW)
+    GPIO.output(LCD_RS, GPIO.LOW)
+    GPIO.output(LCD_E, GPIO.HIGH)
+    time.sleep(0.001)
+    GPIO.output(LCD_E, GPIO.LOW)
+
+    time.sleep(0.001)
+    GPIO.output("P8_11",GPIO.LOW)
+    GPIO.output("P8_12",GPIO.LOW)
+    GPIO.output("P8_14",GPIO.HIGH)
+    GPIO.output("P8_15",GPIO.HIGH)
+    GPIO.output(LCD_RW, GPIO.LOW)
+    GPIO.output(LCD_RS, GPIO.LOW)
+    GPIO.output(LCD_E, GPIO.HIGH)
+    time.sleep(0.001)
+    GPIO.output(LCD_E, GPIO.LOW)
+
+    GPIO.output("P8_11",GPIO.LOW)
+    GPIO.output("P8_12",GPIO.LOW)
+    GPIO.output("P8_14",GPIO.HIGH)
+    GPIO.output("P8_15",GPIO.LOW)
+    GPIO.output(LCD_RW, GPIO.LOW)
+    GPIO.output(LCD_RS, GPIO.LOW)
+    GPIO.output(LCD_E, GPIO.HIGH)
+    time.sleep(0.001)
+    GPIO.output(LCD_E, GPIO.LOW)
+ 
+     
 # Function init: initialize lcd 
 # 
 # Parameters: none
 # Output value: none
 def init():
     #Put enable pin low
-    GPIO.output(LCD_E,GPIO.LOW)   
-    time.sleep(0.01)
+    #GPIO.output(LCD_E,GPIO.LOW)   
+    #time.sleep(0.01)
     #Function set
-    lcdWriteByte(0x30,'cmd')   
-    time.sleep(0.01)
-    lcdWriteByte(0x30,'cmd')
-    time.sleep(0.01)
-    lcdWriteByte(0x30,'cmd')
+    #lcdWriteByte(0x30,'cmd')   
+    #time.sleep(0.01)
+    #lcdWriteByte(0x30,'cmd')
+    #time.sleep(0.01)
+    #lcdWriteByte(0x30,'cmd')
     #Specify number of lines and character font
-    lcdWriteByte(0x20,'cmd') 
+    #lcdWriteByte(0x20,'cmd') 
     #Display Off
     #lcdWriteByte(0x08,'cmd')
     #Display Clear 
     #lcdWriteByte(0x01,'cmd') 
     #Entry mode set
     #lcdWriteByte(0x05,'cmd') 
-    time.sleep(0.1)
+    init_4bit()
+    #time.sleep(0.1)
     print "init done"
     #lcd_w('0000111000')
+    time.sleep(0.1)
     lcdWriteByte(0x28, 'cmd')   # function set: 0x38 for 8 bit operation-0x28 for 4 bit operation, 2 lines, 5x8 dots character font
     time.sleep(0.01)
     lcdWriteByte(0x10, 'cmd')
