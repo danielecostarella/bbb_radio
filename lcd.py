@@ -133,7 +133,6 @@ def writeln(line, data):
             lcdWriteByte(data[i], 'data')
 
 
-
 # Function writeln: Write a line on the lcd
 #
 # Parameters: line=number of lcd line on wich write string; data=the string to be written
@@ -261,4 +260,5 @@ if __name__ == '__main__':
     goto(2,4)
     writestr("Vittoria!")
     writeln(3,'01234567890123456789')
+    writeln(4, 5, 6, 7)
     while(1): time.sleep(1)

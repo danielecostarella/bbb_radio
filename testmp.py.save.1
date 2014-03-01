@@ -80,31 +80,27 @@ def function1():
     print "Run function 1"
     global volume, pause
     volume = volume + 5
-    if (volume > 100):
-        volume = 100
     string = "set_property volume %d\n"  %(volume)
     print "Setting volume: %d\n" %(volume)
     #p.stdin.write('set_property volume 10\n')
     p.stdin.write(string)
-    lines[3]="Volume: " + str(volume) + "%"
-    time.sleep(0.4)
-    lines[3] = ""
-         
+    if pause==1:
+        lines[3]=""
+        pause=0
+        
 
 def function2():
     print "Run function 2"
     global volume, pause
     volume = volume - 5
-    if (volume < 0):
-        volume = 0
     print "Setting volume: %d\n" %(volume)
     string = 'set_property volume %d\n' %(volume)
     p.stdin.write(string)
     #p.stdin.write('set_property volume 40\n')
-    lines[3]="Volume: " + str(volume) + "%"
-    time.sleep(0.4)
-    lines[3] = ""
- 
+    if pause==1:
+        lines[3]=""
+        pause=0
+
 def function3():
     global pause
     print "Run function 3"
@@ -164,9 +160,9 @@ def inputButtons():
             function3()
             time.sleep(0.1)
         old_switch_state3 = new_switch_state3
-        
         new_switch_state4 = GPIO.input("P9_24")
-        if new_switch_state4 == 0 and old_switch_state4 == 1 :
+        
+if new_switch_state4 == 0 and old_switch_state4 == 1 :
             print('Do not press this button 4 again!')
             function4()
             time.sleep(0.1)
