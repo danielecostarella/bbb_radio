@@ -43,10 +43,15 @@ class LiquidCrystal_4bits:
         self.GPIO.output(LCD_E,GPIO.LOW)        # put enable pin low
         sleep(0.01)
         self.writeByte(0x33,'cmd')              # function set
+        sleep(0.01)
         self.writeByte(0x32,'cmd')              #
+        sleep(0.01)
         self.writeByte(0x28,'cmd')              # 4 bit operation, 2 lines, 5x8 dots 
+        sleep(0.01)
         self.writeByte(0x0C,'cmd')              # display on/off control: display on, cursor off 
+        sleep(0.01)
         self.writeByte(0x06,'cmd')              # entry mode set: increase address by one, no shift
+        sleep(0.01)
         self.writeByte(0x01,'cmd')
         
         self.numlines = 4                       # default value
@@ -59,13 +64,15 @@ class LiquidCrystal_4bits:
         """ Put Enable pin to HIGH and then put back to LOW """
         self.GPIO.output(LCD_E, GPIO.HIGH)
         # wait 1 ms
-        #time.sleep(0.001)
+        sleep(0.01)
         self.GPIO.output(LCD_E, GPIO.LOW)
         
     def clear(self):
         self.writeByte(0x01, 'cmd')             # clear display
+        sleep(0.1)
         self.writeByte(0x02, 'cmd')             # go home
-        
+        sleep(0.1)
+
     def home(self):
         self.writeByte(0x02, 'cmd')
         
@@ -259,7 +266,8 @@ class LiquidCrystal_8bits:
     
  
 if __name__ == '__main__':
-    lcd = LiquidCrystal_8bits()
+    lcd = LiquidCrystal_4bits()
+    lcd.begin(4)
     lcd.clear()
     lcd.write("Test1\nTest2")
     lcd.writeln(3, 'Hello!')
