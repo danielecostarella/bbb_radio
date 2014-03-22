@@ -61,10 +61,10 @@ def lcdWriteByte(byte, mode):
 
     # put data on output port
     for i in range(0, 4):
-        print "Byte %d = %s" %(i+1, byte[i])
+        #print "Byte %d = %s" %(i+1, byte[i])
         if byte[i] == '1': GPIO.output(LCD_D[i], GPIO.HIGH)
         else: GPIO.output(LCD_D[i], GPIO.LOW)
-    time.sleep(0.05)
+    #time.sleep(0.05)
 
     # set RS mode
     if mode == 'cmd':
@@ -77,17 +77,17 @@ def lcdWriteByte(byte, mode):
     # E -> 1
     GPIO.output(LCD_E, GPIO.HIGH)
     # wait 1 ms
-    time.sleep(0.001)
+    #time.sleep(0.001)
     # E -> 0
     GPIO.output(LCD_E, GPIO.LOW)
     
     # put data on output port
     for i in range(4, 8):
-        print "Byte %d = %s" %(i+1, byte[i])
+        #print "Byte %d = %s" %(i+1, byte[i])
         if byte[i] == '1': GPIO.output(LCD_D[i-4], GPIO.HIGH)
         else: GPIO.output(LCD_D[i-4], GPIO.LOW)
 
-    time.sleep(0.05)
+    #time.sleep(0.05)
     
     # set RS mode
     if mode == 'cmd':
@@ -100,96 +100,27 @@ def lcdWriteByte(byte, mode):
     # E -> 1
     GPIO.output(LCD_E, GPIO.HIGH)
     # wait 1 ms
-    time.sleep(0.001)
+    #time.sleep(0.001)
     # E -> 0
     GPIO.output(LCD_E, GPIO.LOW)
 
 
-def init_4bit():
-    #Put enable pin low
-    GPIO.output(LCD_E,GPIO.LOW)
-    time.sleep(0.01)
-    GPIO.output("P8_11",GPIO.LOW)
-    GPIO.output("P8_12",GPIO.LOW)
-    GPIO.output("P8_14",GPIO.HIGH)
-    GPIO.output("P8_15",GPIO.HIGH)
-    GPIO.output(LCD_RW, GPIO.LOW)
-    GPIO.output(LCD_RS, GPIO.LOW)
-    GPIO.output(LCD_E, GPIO.HIGH)
-    time.sleep(0.001)
-    GPIO.output(LCD_E, GPIO.LOW)
-
-    time.sleep(0.005)
-    GPIO.output("P8_11",GPIO.LOW)
-    GPIO.output("P8_12",GPIO.LOW)
-    GPIO.output("P8_14",GPIO.HIGH)
-    GPIO.output("P8_15",GPIO.HIGH)
-    GPIO.output(LCD_RW, GPIO.LOW)
-    GPIO.output(LCD_RS, GPIO.LOW)
-    GPIO.output(LCD_E, GPIO.HIGH)
-    time.sleep(0.001)
-    GPIO.output(LCD_E, GPIO.LOW)
-
-    time.sleep(0.001)
-    GPIO.output("P8_11",GPIO.LOW)
-    GPIO.output("P8_12",GPIO.LOW)
-    GPIO.output("P8_14",GPIO.HIGH)
-    GPIO.output("P8_15",GPIO.HIGH)
-    GPIO.output(LCD_RW, GPIO.LOW)
-    GPIO.output(LCD_RS, GPIO.LOW)
-    GPIO.output(LCD_E, GPIO.HIGH)
-    time.sleep(0.001)
-    GPIO.output(LCD_E, GPIO.LOW)
-
-    GPIO.output("P8_11",GPIO.LOW)
-    GPIO.output("P8_12",GPIO.LOW)
-    GPIO.output("P8_14",GPIO.HIGH)
-    GPIO.output("P8_15",GPIO.LOW)
-    GPIO.output(LCD_RW, GPIO.LOW)
-    GPIO.output(LCD_RS, GPIO.LOW)
-    GPIO.output(LCD_E, GPIO.HIGH)
-    time.sleep(0.001)
-    GPIO.output(LCD_E, GPIO.LOW)
- 
-     
 # Function init: initialize lcd 
 # 
 # Parameters: none
 # Output value: none
-def init():
+def init4():
     #Put enable pin low
-    #GPIO.output(LCD_E,GPIO.LOW)   
-    #time.sleep(0.01)
-    #Function set
-    #lcdWriteByte(0x30,'cmd')   
-    #time.sleep(0.01)
-    #lcdWriteByte(0x30,'cmd')
-    #time.sleep(0.01)
-    #lcdWriteByte(0x30,'cmd')
-    #Specify number of lines and character font
-    #lcdWriteByte(0x20,'cmd') 
-    #Display Off
-    #lcdWriteByte(0x08,'cmd')
-    #Display Clear 
-    #lcdWriteByte(0x01,'cmd') 
-    #Entry mode set
-    #lcdWriteByte(0x05,'cmd') 
-    init_4bit()
-    #time.sleep(0.1)
-    print "init done"
-    #lcd_w('0000111000')
-    time.sleep(0.1)
-    lcdWriteByte(0x28, 'cmd')   # function set: 0x38 for 8 bit operation-0x28 for 4 bit operation, 2 lines, 5x8 dots character font
+    GPIO.output(LCD_E,GPIO.LOW)   
     time.sleep(0.01)
-    lcdWriteByte(0x10, 'cmd')
-    time.sleep(0.01)
-    #lcd_w('0000001110')
-    lcdWriteByte(0x0F, 'cmd')   # display on/off control: display on, cursor off
-    time.sleep(0.01)
-    #lcd_w('0000000110')
-    lcdWriteByte(0x06, 'cmd')   # entry mode set: increase address by one, no shift
-    time.sleep(0.01)
-    #lcd_w('1001010111')
+    # Function set
+    lcdWriteByte(0x33,'cmd')
+    lcdWriteByte(0x32,'cmd') 
+    lcdWriteByte(0x28,'cmd')        # function set: 4 bit operation, 2 lines, 5x8 dots 
+    lcdWriteByte(0x0C,'cmd')        # display on/off control: display on, cursor off 
+    lcdWriteByte(0x06,'cmd')        # entry mode set: increase address by one, no shift
+    lcdWriteByte(0x01,'cmd')   
+     
 
 # Function writeln: Write a line on the lcd 
 # 
@@ -315,8 +246,9 @@ if __name__ == '__main__':
     print "inizio test"
     threads = []
     setup()
-    init()
+    init4()
     welcome()
+    writeln(4,'01234567890123456789')
     """
     print "Scrivo 'a'"
     t = threading.Thread(target=scroll4, args=(1, ["Prima linea", "Seconda linea lunghissima", "Terza", "Quarta"]))
@@ -339,5 +271,5 @@ if __name__ == '__main__':
     writestr("Vittoria!")
     writeln(3,'01234567890123456789')
     writeln(4, 5, 6, 7)
-    """
     while(1): time.sleep(1)
+    """

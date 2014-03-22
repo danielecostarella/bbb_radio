@@ -49,6 +49,12 @@ class LiquidCrystal_4bits:
         self.writeByte(0x06,'cmd')              # entry mode set: increase address by one, no shift
         self.writeByte(0x01,'cmd')
         
+        self.numlines = 4                       # default value
+ 
+    def begin(self, lines):
+        """ Set the number of the rows """
+        self.numlines = lines
+        
     def enablePulse(self):
         """ Put Enable pin to HIGH and then put back to LOW """
         self.GPIO.output(LCD_E, GPIO.HIGH)
@@ -66,6 +72,9 @@ class LiquidCrystal_4bits:
     def goto(self, line, offset):
         """ definition of a dictionary with the inital index of every line on the lcd """
         position = {1:0x00, 2:0x40, 3:0x14, 4:0x54}
+        
+        if (line > self.numlines):
+            line = self.numlines - 2
         
         """ send the command to the lcd with the desidered position """
         self.writeByte( (0x80 | (position[line] + (offset-1))), 'cmd')
@@ -171,7 +180,11 @@ class LiquidCrystal_8bits:
         sleep(0.01)
         
         print "[DEBUG] Init done"
-        
+
+    def begin(self, lines):
+        """ Set the number of the rows """
+        self.numlines = lines
+
     def enablePulse(self):
         """ Put Enable pin to HIGH and then put back to LOW """
         self.GPIO.output(LCD_E, GPIO.HIGH)
@@ -189,6 +202,9 @@ class LiquidCrystal_8bits:
     def goto(self, line, offset):
         """ definition of a dictionary with the inital index of every line on the lcd """
         position = {1:0x00, 2:0x40, 3:0x14, 4:0x54}
+
+        if (line > self.numlines):
+            line = self.numlines - 2
         
         """ send the command to the lcd with the desidered position """
         self.writeByte( (0x80 | (position[line] + (offset-1))), 'cmd')
